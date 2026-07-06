@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrusel con Descripciones</title>
+    <link rel="stylesheet" href="css/carrusel.css">
+    <script>
+        window.onload = function() {
+            // Array con imágenes y sus descripciones
+            const IMAGENES = [
+                { 
+                    url: 'img/atardecer.jpg',
+                    desc: ' Atardecer en la playa '
+                },
+                { 
+                    url: 'img/paisajes-de-mexico.jpg',
+                    desc: ' bonito paisaje mexico  '
+                },
+                { 
+                    url: 'img/parque-nacional-banff.jpg',
+                    desc: 'Parque Nacional Banff - Montañas y lagos'
+                }
+            ];
+            
+            const TIEMPO_INTERVALO = 2000;
+            let posicionActual = 0;
+            let $botonRetroceder = document.querySelector('#retroceder');
+            let $botonAvanzar = document.querySelector('#avanzar');
+            let $imagen = document.querySelector('#imagen');
+            let $infoImagen = document.querySelector('#info-imagen');
+            let $botonPlay = document.querySelector('#play');
+            let $botonStop = document.querySelector('#stop');
+            let intervalo;
+
+            function pasarFoto() {
+                posicionActual = (posicionActual >= IMAGENES.length - 1) ? 0 : posicionActual + 1;
+                renderizarImagen();
+            }
+
+            function retrocederFoto() {
+                posicionActual = (posicionActual <= 0) ? IMAGENES.length - 1 : posicionActual - 1;
+                renderizarImagen();
+            }
+
+            function renderizarImagen() {
+                $imagen.style.backgroundImage = `url(${IMAGENES[posicionActual].url})`;
+                $infoImagen.textContent = IMAGENES[posicionActual].desc;
+            }
+
+            function playIntervalo() {
+                intervalo = setInterval(pasarFoto, TIEMPO_INTERVALO);
+                $botonAvanzar.disabled = true;
+                $botonRetroceder.disabled = true;
+                $botonPlay.disabled = true;
+                $botonStop.disabled = false;
+            }
+
+            function stopIntervalo() {
+                clearInterval(intervalo);
+                $botonAvanzar.disabled = false;
+                $botonRetroceder.disabled = false;
+                $botonPlay.disabled = false;
+                $botonStop.disabled = true;
+            }
+
+            // Eventos
+            $botonAvanzar.addEventListener('click', () => {
+                if (!intervalo) pasarFoto();
+            });
+            $botonRetroceder.addEventListener('click', () => {
+                if (!intervalo) retrocederFoto();
+            });
+            $botonPlay.addEventListener('click', playIntervalo);
+            $botonStop.addEventListener('click', stopIntervalo);
+            
+            // Iniciar
+            renderizarImagen();
+            $botonStop.disabled = true;
+        };
+    </script>
+</head>
+<body>
+    <div class="carousel">
+        <button class="btn-cuadrado" id="retroceder"><</button>
+        <div id="imagen">
+            <div id="info-imagen"></div>
+        </div>
+        <button class="btn-cuadrado" id="avanzar">></button>
+    </div>
+    <div class="controles">
+        <button id="play"> Avanzar> </button>
+        <button id="stop"> Detener</button>
+    </div>
+</body>
+</html>
