@@ -1,82 +1,83 @@
-window.onload = function () {
-    // Variables
+window.onload = function() {
+    // areglo de las imágenes para el carrusel  y sus descripciones
     const IMAGENES = [
-        'img/montanya.jpg',
-        'img/parque.jpg',
-        'img/palmeras.jpg'
+        { 
+            url: 'img/atardecer.jpg',
+            desc: 'Atardecer en la playa'
+        },
+        { 
+            url: 'img/paisajes-de-mexico.jpg',
+            desc: 'Bonito paisaje México'
+        },
+        { 
+            url: 'img/parque-nacional-banff.jpg',
+            desc: 'Parque Nacional Banff - Montañas y lagos'
+        }
     ];
-    const TIEMPO_INTERVALO_MILESIMAS_SEG = 1000;
+    
+    const TIEMPO_INTERVALO = 2000;
     let posicionActual = 0;
-    let $botonRetroceder = document.querySelector('#retroceder');
-    let $botonAvanzar = document.querySelector('#avanzar');
-    let $imagen = document.querySelector('#imagen');
-    let $botonPlay = document.querySelector('#play');
-    let $botonStop = document.querySelector('#stop');
     let intervalo;
 
-    // Funciones
+    // Elementos del DOM
+    const $botonRetroceder = document.querySelector('#retroceder');
+    const $botonAvanzar = document.querySelector('#avanzar');
+    const $imagen = document.querySelector('#imagen');
+    const $infoImagen = document.querySelector('#info-imagen');
+    const $botonPlay = document.querySelector('#play');
+    const $stopButton = document.querySelector('#stop');
 
-    /**
-     * Funcion que cambia la foto en la siguiente posicion
-     */
+    // Cambia la imagen hacia adelante usando la utilería
     function pasarFoto() {
-        if(posicionActual >= IMAGENES.length - 1) {
-            posicionActual = 0;
-        } else {
-            posicionActual++;
-        }
+        posicionActual = calcularSiguientePosicion(posicionActual, IMAGENES.length);
         renderizarImagen();
     }
 
-    /**
-     * Funcion que cambia la foto en la anterior posicion
-     */
+    // Cambia la imagen hacia atrás usando la utilería
     function retrocederFoto() {
-        if(posicionActual <= 0) {
-            posicionActual = IMAGENES.length - 1;
-        } else {
-            posicionActual--;
-        }
+        posicionActual = calcularAnteriorPosicion(posicionActual, IMAGENES.length);
         renderizarImagen();
     }
 
-    /**
-     * Funcion que actualiza la imagen de imagen dependiendo de posicionActual
-     */
-    function renderizarImagen () {
-        $imagen.style.backgroundImage = `url(${IMAGENES[posicionActual]})`;
+    // Actualiza la UI visualmente
+    function renderizarImagen() {
+        $imagen.style.backgroundImage = `url(${IMAGENES[posicionActual].url})`;
+        $infoImagen.textContent = IMAGENES[posicionActual].desc;
     }
 
-    /**
-     * Activa el autoplay de la imagen
-     */
+    // Controladores de Autoplay
     function playIntervalo() {
-        intervalo = setInterval(pasarFoto, TIEMPO_INTERVALO_MILESIMAS_SEG);
-        // Desactivamos los botones de control
-        $botonAvanzar.setAttribute('disabled', true);
-        $botonRetroceder.setAttribute('disabled', true);
-        $botonPlay.setAttribute('disabled', true);
-        $botonStop.removeAttribute('disabled');
-
+        intervalo = setInterval(pasarFoto, TIEMPO_INTERVALO);
+        
+        $botonAvanzar.disabled = true;
+        $botonRetroceder.disabled = true;
+        $botonPlay.disabled = true;
+        $stopButton.disabled = false;
     }
 
-    /**
-     * Para el autoplay de la imagen
-     */
     function stopIntervalo() {
         clearInterval(intervalo);
-        // Activamos los botones de control
-        $botonAvanzar.removeAttribute('disabled');
-        $botonRetroceder.removeAttribute('disabled');
-        $botonPlay.removeAttribute('disabled');
-        $botonStop.setAttribute('disabled', true);
+        intervalo = null; // Reseteamos la variable de control
+        
+        $botonAvanzar.disabled = false;
+        $botonRetroceder.disabled = false;
+        $botonPlay.disabled = false;
+        $stopButton.disabled = true;
     }
 
-    // Eventos
-    $botonAvanzar.addEventListener('click', pasarFoto);
-    $botonRetroceder.addEventListener('click', retrocederFoto);
+    // Asignación de Eventos
+    $botonAvanzar.addEventListener('click', () => {
+        if (!intervalo) pasarFoto();
+    });
+    
+    $botonRetroceder.addEventListener('click', () => {
+        if (!intervalo) retrocederFoto();
+    });
+    
     $botonPlay.addEventListener('click', playIntervalo);
-    $botonStop.addEventListener('click', stopIntervalo);
-    // Iniciar
+    $stopButton.addEventListener('click', stopIntervalo);
+    
+    // Configuración Inicial de la Aplicación
     renderizarImagen();
-}
+    $stopButton.disabled = true;
+};
