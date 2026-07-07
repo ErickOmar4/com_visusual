@@ -1,14 +1,14 @@
 # Componente-Visual
 Intrituto tecnologico de oaxaca
 
-![escuela](logoTecNM2.png)
+![escuela](img_programa/imlogoTecNM2.png)
 
 Alumno: santiago ramirez erick omar 
 Profesora: Programacion Web
 Materia:  Martinez Nieto Adelina
 
 creacion de una libreria para un componente visual en js
-![arquitectura del programa](Arquitectura.png)
+![arquitectura del programa](img_programa/Arquitectura.png)
 
 ### ¿Qué problema resuelve?
 El renderizado y control de galerías de imágenes dinámicas suele mezclar la lógica de la secuencia de índices con los eventos del navegador. Este proyecto soluciona ese acoplamiento dividiendo el cálculo matemático de las posiciones (módulos reutilizables) de la lógica de renderizado e intervalos de tiempo, garantizando un código escalable, libre de dependencias y de alta velocidad de respuesta.
